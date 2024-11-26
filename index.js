@@ -9,20 +9,21 @@ app.use(express.json());
 // Token validation middleware
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Extract the token after 'Bearer '
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ error: 'Authorization token is missing' });
   }
 
-  // validate the token 
+  // Example validation logic
   // if (token !== 'your-secure-token') {
   //   return res.status(403).json({ error: 'Invalid token' });
   // }
 
-  next(); 
+  next();
 }
 
+// Define routes
 app.get('/functions/base64Encode', (req, res) => {
   res.json({
     name: "base64Encode",
@@ -40,10 +41,9 @@ app.get('/functions/base64Encode', (req, res) => {
   });
 });
 
-// Function endpoint (POST) with token authentication
 app.post('/functions/base64Encode', authenticateToken, (req, res) => {
   const { input } = req.body;
-  
+
   if (!input) {
     return res.status(400).json({ error: 'Input is required' });
   }
@@ -52,7 +52,5 @@ app.post('/functions/base64Encode', authenticateToken, (req, res) => {
   res.json({ output });
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Export as a serverless function
+module.exports = app;
